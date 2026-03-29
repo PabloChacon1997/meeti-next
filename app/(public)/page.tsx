@@ -1,14 +1,17 @@
 import { Metadata } from "next";
 
+import Hero from "@/src/components/ui/Hero";
+import { generatePageTitle } from "@/src/shared/utils/metadata";
+
 
 export const metadata: Metadata = {
-  title: 'Meeti - Inicio'
+  title: generatePageTitle('Inicio')
 }
 
 export default function Home() {
   return (
     <>
-      <h1>Inicio</h1>
+      <Hero />
     </>
   );
 }
