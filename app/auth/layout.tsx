@@ -1,4 +1,4 @@
-import Logo from "@/src/components/ui/Logo";
+import Logo from "@/src/shared/components/ui/Logo";
 import Link from "next/link";
 
 export default function AuthLayout({

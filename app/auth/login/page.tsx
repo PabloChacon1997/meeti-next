@@ -1,4 +1,4 @@
-import Heading from "@/src/components/typography/Heading";
+import Heading from "@/src/shared/components/typography/Heading";
 import { generatePageTitle } from "@/src/shared/utils/metadata";
 import { Metadata } from "next";
 

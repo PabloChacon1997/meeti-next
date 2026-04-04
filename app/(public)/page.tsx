@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import Hero from "@/src/components/ui/Hero";
+import Hero from "@/src/shared/components/ui/Hero";
 import { generatePageTitle } from "@/src/shared/utils/metadata";
 
 
