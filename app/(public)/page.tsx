@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: generatePageTitle('Inicio')
 }
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <Hero />
