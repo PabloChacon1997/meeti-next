@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 
 import { auth } from "@/src/lib/auth"
-import { SignInInput, SignUpInput } from "../schemas/authSchema"
+import { ForgotPasswordInput, SignInInput, SignUpInput } from "../schemas/authSchema"
 import { authRepository, IAuthRepository } from './AuthRepository';
 import { APIError } from "better-auth";
 
@@ -80,6 +80,27 @@ class AuthService {
     return {
       error: '',
       success: 'Ha inciado sesion correctamente'
+    }
+  }
+
+  async requestPasswordReset(input: ForgotPasswordInput) {
+    const user = await this.authRepository.userExists(input.email)
+    if (!user) {
+      return {
+        error: 'No exite un usuario con este email',
+        success: ''
+      }
+    }
+
+    await auth.api.requestPasswordReset({
+      body: {
+        email: input.email,
+      }
+    })
+
+    return {
+      error: '',
+      success: 'Te hemos enviado un email con instrucciones al correo ingresado'
     }
   }
 }
