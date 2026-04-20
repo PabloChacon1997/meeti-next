@@ -1,6 +1,6 @@
 "use server"
 
-import { ForgotPasswordInput, ForgotPasswordSchema, SignInInput, SignInShcema, SignUpInput, SignUpSchema } from "../schemas/authSchema"
+import { ForgotPasswordInput, ForgotPasswordSchema, SetPasswordInput, SetPasswordSchema, SignInInput, SignInShcema, SignUpInput, SignUpSchema } from "../schemas/authSchema"
 import { authService } from "../services/AuthService"
 
 export async function signUpAction(input: SignUpInput) {
@@ -39,5 +39,19 @@ export async function forgotPasswordAction(input: ForgotPasswordInput) {
   }
 
   const response = await authService.requestPasswordReset(data.data);
+  return response;
+}
+
+
+export async function setPasswordAction(input: SetPasswordInput, token: string) {
+  const data = SetPasswordSchema.safeParse(input);
+  if (!data.success) {
+    return {
+      error: 'Hubo un error',
+      success: ''
+    }
+  }
+
+  const response = await authService.confirmPasswordReset(data.data, token);
   return response;
 }
