@@ -8,8 +8,10 @@ import { CommunityInput } from "@/src/features/communities/schemas/communitySche
 import { FormError } from "../forms";
 
 export default function UploadImage() {
-  const { formState: { errors }, setValue } = useFormContext<CommunityInput>()
+  const { formState: { errors }, setValue, getValues } = useFormContext<CommunityInput>()
   const [uploadedImage, setUploadedImage] = useState('');
+  const currentImage = getValues('image') ? getValues('image'): null;
+  console.log(currentImage)
   return (
     <>
       <UploadDropZone
@@ -46,6 +48,19 @@ export default function UploadImage() {
           />
         </>
       )}
+      {
+        currentImage && !uploadedImage && (
+          <>
+            <p className="text-lg font-bold">Imagen Actual:</p>
+            <Image
+              src={currentImage}
+              alt="Imagen publicada"
+              width={300}
+              height={200}
+            />
+          </>
+        )
+      }
     </>
   )
 }
