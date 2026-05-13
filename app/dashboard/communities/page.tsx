@@ -4,6 +4,7 @@ import Link from "next/link"
 import { generatePageTitle } from "@/src/shared/utils/metadata"
 import Heading from "@/src/shared/components/typography/Heading"
 import MyCommunities from "@/src/features/communities/components/MyCommunities"
+import DeleteCommunityModal from "@/src/features/communities/components/DeleteCommunityModal"
 
 export const metadata: Metadata = {
   title: generatePageTitle('Administra tus comunidades')
@@ -25,6 +26,8 @@ export default function CommunitiesPage() {
       </div>
 
       <MyCommunities />
+
+      <DeleteCommunityModal />
     </>
   )
 }
