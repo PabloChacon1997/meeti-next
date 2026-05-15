@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import toast from "react-hot-toast"
+
 import { CommunityPermissions } from "../types/community.types"
 import { toogleMembershipAction } from "../actions/membership.actions"
 
@@ -11,30 +13,21 @@ type Props = {
 
 export default function CommunityMembership({permissions, communityId}: Props) {
   const [canJoin, setCanJoin] = useState(permissions.canJoin)
-  const [canLeave, setCanLeave] = useState(permissions.canLeave);
 
   const handleClick = async () => {
-    await toogleMembershipAction(communityId);
+    const result = await toogleMembershipAction(communityId);
+    if (result?.success) {
+      toast.success(result.message)
+      setCanJoin(result.newPermissions.canJoin)
+    }
   }
 
   return (
     <>
-      {
-        canJoin && (
-          <button
-            className="font-bold text-lg w-full lg:w-auto px-5 py-2 text-white cursor-pointer bg-orange-600"
+      <button
+            className={`${canJoin ? 'bg-orange-500': 'bg-orange-600'} font-bold text-lg w-full lg:w-auto px-5 py-2 text-white cursor-pointer`}
             onClick={handleClick}
-          >Inscribirme a esta comunidad</button>
-        )
-      }
-      {
-        canLeave && (
-          <button
-            className="font-bold text-lg w-full lg:w-auto px-5 py-2 text-white cursor-pointer bg-red-600"
-            onClick={handleClick}
-          >Abandonar comunidad</button>
-        )
-      }
+          >{ canJoin ? 'Inscribirme a esta comunidad': 'Abandonar comunidad'}</button>
     </>
   )
 }

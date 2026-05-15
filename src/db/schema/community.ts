@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { users } from "./auth";
+import { relations } from "drizzle-orm";
 
 
 export const community = pgTable('communities', {
@@ -17,3 +18,10 @@ export const communityMmebers =pgTable('community_members', {
   userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   joinedAt: timestamp('joined_at').defaultNow(),
 })
+
+export const communityMenbersRelations = relations(communityMmebers, ({ one }) => ({
+  community: one(community, {
+    fields: [communityMmebers.communityId],
+    references: [community.id]
+  })
+}))

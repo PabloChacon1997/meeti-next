@@ -1,8 +1,11 @@
 import { Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
+import { requireAuth } from "@/src/lib/auth-server"
 import { generatePageTitle } from "@/src/shared/utils/metadata"
 import Heading from "@/src/shared/components/typography/Heading"
+import { membershipService } from "@/src/features/communities/services/MembershipService"
 
 const title =  'Comunidades a las que te uniste'
 
@@ -10,7 +13,11 @@ export const metadata: Metadata = {
   title: generatePageTitle(title)
 }
 
-export default function JoinCommunitiesPage() {
+export default async function JoinCommunitiesPage() {
+  const { session } = await requireAuth()
+  if(!session) redirect('/auth/login')
+
+  await membershipService.getJoinCommunities(session.user)
   return (
     <>
       <Heading>{title}</Heading>
