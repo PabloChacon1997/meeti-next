@@ -1,15 +1,27 @@
+import Image from "next/image";
+import { Metadata } from "next";
+
 import CommunityActionsPanel from "@/src/features/communities/components/CommunityActionsPanel";
 import { communityService } from "@/src/features/communities/services/CommunityService";
 import { getServerSession } from "@/src/lib/auth-server";
 import Heading from "@/src/shared/components/typography/Heading";
-import Image from "next/image";
+import { generatePageTitle } from "@/src/shared/utils/metadata";
+import { pluralize } from "@/src/shared/utils/strings";
+
+export async function generateMetadata({params}:  PageProps<'/communities/[id]'>): Promise<Metadata> {
+  const { id } = await params;
+  const community = await communityService.getCommunity(id);
+  return {
+    title: generatePageTitle(`Comunidad ${community.name}`)
+  }
+}
 
 export default async function CommunityPage(props: PageProps<'/communities/[id]'>) {
   const { id } = await props.params;
   const session = await getServerSession()
 
   const community = await communityService.getCommunityDetails(id, session?.user)
-  console.log(community);
+
   return (
     <>
       <main className="max-w-7xl mx-auto space-y-5 p-10 lg:p-0 mt-10">
@@ -35,6 +47,7 @@ export default async function CommunityPage(props: PageProps<'/communities/[id]'
             </div>
             <Heading className="text-center">{community.data.name}</Heading>
             <p className="text-gray-600 text-lg text-center">{community.data.description}</p>
+            <p className="text-gray-600 text-sm text-center">{community.memberCount} {pluralize('Miembro', community.memberCount)}</p>
           </div>
           <div className="bg-slate-100 p-5 rounded-2xl">
             {/* Admin Aquí */}

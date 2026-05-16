@@ -1,9 +1,17 @@
-import { community } from "@/src/db/schema";
+import { community, communityMmebers } from "@/src/db/schema";
+import { User } from "../../auth/types/auth.types";
 
 
 
 export type InsertCommunity = typeof community.$inferInsert;
 export type SelectCommunity = typeof community.$inferSelect;
+
+export type SelectCommunityMembers = typeof communityMmebers.$inferInsert;
+
+export type JoinCommunity = SelectCommunityMembers & {
+  community: SelectCommunity
+  user: User
+}
 
 export type CommunityPermissions = {
   canEdit: boolean,
@@ -20,6 +28,7 @@ export type CommunityContext = {
 
 export type CommunityWithPermissions = {
   data: SelectCommunity,
+  memberCount: number
   context: CommunityContext,
   permissions: CommunityPermissions,
 }

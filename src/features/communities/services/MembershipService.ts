@@ -2,6 +2,7 @@ import { User } from "better-auth";
 import { IMembershipRepository, membershipRepository } from './MembershipRepository';
 import { communityRepository, ICommunityRepository } from './CommunityRepository';
 import { MembershipPolicy } from "../policies/MembershipPolicy";
+import { CommunityPolicy } from "../policies/CommunityPolicy";
 
 class MembershipService {
   constructor(
@@ -39,7 +40,28 @@ class MembershipService {
   }
 
   async getJoinCommunities(user: User) {
-    await this.membershipRepository.findJoinCommunities(user.id);
+    const joined = await this.membershipRepository.findJoinCommunities(user.id);
+    const enriched = await Promise.all(joined.map(async ({community, user}) => {
+      const isMember = true;
+      const isAdmin = CommunityPolicy.isAdmin(user, community);
+      const memberCount = await this.membershipRepository.getMemberCount(community.id)
+      return {
+        data: community,
+        memberCount,
+        context: {
+          isMember,
+          isAdmin
+        },
+        permissions: {
+          canEdit: CommunityPolicy.canEdit(user, community),
+          canDelete: CommunityPolicy.canDelete(user, community),
+          canJoin: MembershipPolicy.canJoin(user, community, isMember),
+          canLeave: MembershipPolicy.canLeave(user, community, isMember),
+          canViewMembers: CommunityPolicy.canViewMembers(user, community),
+        }
+      }
+    }))
+    return enriched;
   }
 }
 

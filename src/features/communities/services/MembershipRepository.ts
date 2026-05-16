@@ -1,12 +1,14 @@
 import { db } from "@/src/db"
 import { community, communityMmebers, users } from "@/src/db/schema"
-import { and, eq } from "drizzle-orm"
+import { and, count, eq } from "drizzle-orm"
+import { JoinCommunity } from "../types/community.types"
 
 export interface IMembershipRepository {
   addMember(communityId: string, userId: string): Promise<void>
   removeMember(communityId: string, userId: string): Promise<void>
   isMember(communityId: string, userId: string): Promise<boolean>
-  findJoinCommunities(userId: string): Promise<void>
+  findJoinCommunities(userId: string): Promise<JoinCommunity[]>
+  getMemberCount(communityId: string): Promise<number>
 }
 
 class MembershipRepository implements IMembershipRepository{
@@ -36,18 +38,34 @@ class MembershipRepository implements IMembershipRepository{
     )
   }
 
-  async findJoinCommunities(userId: string): Promise<void> {
-    // TODO: Realizar get con findMany
+  async findJoinCommunities(userId: string): Promise<JoinCommunity[]> {
     // const result = await db.query.communityMmebers.findMany({
     //   where: eq(communityMmebers.userId, userId),
     //   with: {
     //     community: true
     //   }
     // });
-    const result = await db.select().from(communityMmebers)
+    const consult = await db.select().from(communityMmebers)
       .where(eq(communityMmebers.userId, userId))
       .leftJoin(community,eq(communityMmebers.communityId, community.id) )
-    console.log(result);
+      .leftJoin(users,eq(communityMmebers.userId, users.id) )
+    const result = consult.map(r => {
+      return {
+        ...r.community_members,
+        community: r.communities!,
+        user: r.users!,
+      }
+    })
+    return result;
+  }
+
+  async getMemberCount(communityId: string): Promise<number> {
+    const [ result ] = await db
+      .select({ total: count() })
+      .from(communityMmebers)
+      .where(eq(communityMmebers.communityId, communityId))
+
+    return result.total
   }
 }
 
