@@ -36,6 +36,20 @@
       "when": 1778718995522,
       "tag": "0004_square_juggernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779145160441,
+      "tag": "0005_luxuriant_queen_noir",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779145244104,
+      "tag": "0006_smooth_arachne",
+      "breakpoints": true
     }
   ]
 }

@@ -3,14 +3,19 @@
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+
 import Logo from '../ui/Logo'
 import NotificationsPanel from './NotificationsPanel'
 import UserMenu from './UserMenu'
 import MobileSidebar from './MobileSidebar'
 import DashboardNavigation from './DashboardNavigation'
+import { useSession } from '@/src/lib/auth-client'
 
 export default function DashboardPanel() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isPending,} = useSession()
+  
+  if(isPending) return 'Cargando...'
 
   return (
     <>

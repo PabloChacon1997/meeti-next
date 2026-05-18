@@ -3,11 +3,13 @@ import { IMembershipRepository, membershipRepository } from './MembershipReposit
 import { communityRepository, ICommunityRepository } from './CommunityRepository';
 import { MembershipPolicy } from "../policies/MembershipPolicy";
 import { CommunityPolicy } from "../policies/CommunityPolicy";
+import { INotificationRepository, notificationRepository } from "../../notifications/services/NotificationRepository";
 
 class MembershipService {
   constructor(
     private membershipRepository: IMembershipRepository,
     private communityRepository: ICommunityRepository,
+    private notificationRepository: INotificationRepository,
   ) {}
   async toogleMembsership(communityId: string, user: User) {
     const community = await this.communityRepository.findById(communityId);
@@ -15,6 +17,12 @@ class MembershipService {
     const isMember = await this.membershipRepository.isMember(community.id, user.id);
     if (MembershipPolicy.canJoin(user, community, isMember)) {
       await this.membershipRepository.addMember(communityId, user.id);
+      const notification = await this.notificationRepository.create({
+        userId: community.createdBy,
+        actorName: user.name,
+        message: 'Se unió a tú comunidad',
+        target: community.name
+      })
       return {
         success: true,
         message: `Te has unido a la comunidad: ${community.name}`,
@@ -65,4 +73,4 @@ class MembershipService {
   }
 }
 
-export const membershipService = new MembershipService(membershipRepository, communityRepository);
+export const membershipService = new MembershipService(membershipRepository, communityRepository, notificationRepository);

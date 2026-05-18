@@ -1,0 +1,1 @@
+ALTER TABLE "notifications" RENAME COLUMN "created_At" TO "created_at";

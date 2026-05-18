@@ -1,7 +1,10 @@
+import { Suspense, use } from 'react'
 import { BellIcon } from '@heroicons/react/24/outline'
 
+const notificationPromise = fetch('/api/user/notifications').then(res => res.json())
+
 function NotificationCount() {
-  const totalNotifications = 0
+  const totalNotifications = use(notificationPromise);
   
   return (
     <a
@@ -20,6 +23,8 @@ function NotificationCount() {
 
 export default function NotificationsPanel() {
   return (
+    <Suspense fallback="Cargando...">
       <NotificationCount />
+    </Suspense>
   )
 }
