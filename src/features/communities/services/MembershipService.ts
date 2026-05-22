@@ -1,15 +1,16 @@
 import { User } from "better-auth";
+
 import { IMembershipRepository, membershipRepository } from './MembershipRepository';
 import { communityRepository, ICommunityRepository } from './CommunityRepository';
 import { MembershipPolicy } from "../policies/MembershipPolicy";
 import { CommunityPolicy } from "../policies/CommunityPolicy";
-import { INotificationRepository, notificationRepository } from "../../notifications/services/NotificationRepository";
+import { INotificationService, notificationService } from "../../notifications/services/NotificationService";
 
 class MembershipService {
   constructor(
     private membershipRepository: IMembershipRepository,
     private communityRepository: ICommunityRepository,
-    private notificationRepository: INotificationRepository,
+    private notificationService: INotificationService,
   ) {}
   async toogleMembsership(communityId: string, user: User) {
     const community = await this.communityRepository.findById(communityId);
@@ -17,7 +18,7 @@ class MembershipService {
     const isMember = await this.membershipRepository.isMember(community.id, user.id);
     if (MembershipPolicy.canJoin(user, community, isMember)) {
       await this.membershipRepository.addMember(communityId, user.id);
-      const notification = await this.notificationRepository.create({
+      await this.notificationService.createAndNotify({
         userId: community.createdBy,
         actorName: user.name,
         message: 'Se unió a tú comunidad',
@@ -73,4 +74,4 @@ class MembershipService {
   }
 }
 
-export const membershipService = new MembershipService(membershipRepository, communityRepository, notificationRepository);
+export const membershipService = new MembershipService(membershipRepository, communityRepository, notificationService);
