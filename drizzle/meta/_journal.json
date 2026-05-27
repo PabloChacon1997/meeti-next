@@ -50,6 +50,13 @@
       "when": 1779145244104,
       "tag": "0006_smooth_arachne",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1779843046944,
+      "tag": "0007_steep_komodo",
+      "breakpoints": true
     }
   ]
 }
