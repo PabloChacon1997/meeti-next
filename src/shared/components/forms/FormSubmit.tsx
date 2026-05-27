@@ -2,7 +2,7 @@ import { InputHTMLAttributes } from "react"
 
 type Props = InputHTMLAttributes<HTMLInputElement>
 
-export default function FormSubmit(props: Props) {
+export function FormSubmit(props: Props) {
   return (
     <input
       {...props}
