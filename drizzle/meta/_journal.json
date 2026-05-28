@@ -57,6 +57,13 @@
       "when": 1779843046944,
       "tag": "0007_steep_komodo",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1779930780876,
+      "tag": "0008_black_mindworm",
+      "breakpoints": true
     }
   ]
 }

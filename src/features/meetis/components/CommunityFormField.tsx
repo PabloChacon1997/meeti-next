@@ -12,7 +12,7 @@ function CommunityOptions() {
     <>
       <FormLabel>Comunidad Meeti</FormLabel>
       <FormSelect>
-        <option value="">Slecciona comunidad</option>
+        <option value="">Selecciona comunidad</option>
         {
           communities.map(community => <option key={community.id} value={community.id}>{community.name}</option>)
         }
