@@ -6,6 +6,8 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import { FormInput, FormLabel } from '@/src/shared/components/forms';
+import { useFormContext } from 'react-hook-form';
+import { GeoCodeSchema, MeetiInput } from '../schemas/meetiSchema';
 
 function CenterMap({ coordinates }: { coordinates: LatLngTuple }) {
   const map = useMap()
@@ -25,8 +27,10 @@ const markerIcon = new Icon({
 
 export default function LocationPicker() {
 
-  const lat = 25.776311
-  const lng = -80.3121477
+  const { register, getValues } = useFormContext<MeetiInput>()
+
+  const lat = getValues('location.lat')
+  const lng = getValues('location.lng')
 
   const [coordinates, setCoordinates] = useState<LatLngTuple>([lat, lng]);
 
@@ -34,11 +38,12 @@ export default function LocationPicker() {
   const ZOOM = 16;
   const GEOCODE_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&langCode=ES&location=";
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const reverseGeocoding = async (positionTuple: LatLngTuple) => {
     const url = GEOCODE_URL + `${positionTuple[1]},${positionTuple[0]}`
     const data = await (await fetch(url)).json();
-
-
+    const location = GeoCodeSchema.parse(data.address)
+    console.log(location);
   }
 
 
