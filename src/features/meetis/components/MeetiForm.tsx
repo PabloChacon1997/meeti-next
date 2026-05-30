@@ -1,10 +1,11 @@
 import dynamic from "next/dynamic";
+import { useFormContext } from "react-hook-form";
 
 import { FormError, FormInput, FormLabel, FormTextArea, FormToggle } from "@/src/shared/components/forms";
 import CommunityFormField from "./CommunityFormField";
 import CategoryFormField from "./CategoryFormField";
-import { useFormContext } from "react-hook-form";
 import { MeetiInput } from "../schemas/meetiSchema";
+import UploadImage from "@/src/shared/components/upload/UploadImage";
 
 const DynamicLocationPicker = dynamic(() => import('./LocationPicker'), { ssr: false })
 
@@ -37,6 +38,8 @@ export default function MeetiForm() {
           {...register('details')}
         />
         {errors.details && <FormError >{errors.details.message}</FormError>}
+        <FormLabel >Imagen de Meeti</FormLabel>
+        <UploadImage />
         <CategoryFormField />
         <CommunityFormField />
         
@@ -95,7 +98,13 @@ export default function MeetiForm() {
               id="place_name"
               type="text"
               placeholder="Nombre Lugar evento"
+              {...register('location.placeName')}
             />
+            {
+              'location' in errors && errors.location?.placeName && (
+                <FormError>{errors.location.placeName.message}</FormError>
+              )
+            }
 
             <DynamicLocationPicker />
           </fieldset>

@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
 
-import { FormInput, FormLabel } from '@/src/shared/components/forms';
+import { FormError, FormInput, FormLabel } from '@/src/shared/components/forms';
 import { useFormContext } from 'react-hook-form';
 import { GeoCodeSchema, MeetiInput } from '../schemas/meetiSchema';
 
@@ -27,7 +27,7 @@ const markerIcon = new Icon({
 
 export default function LocationPicker() {
 
-  const { register, getValues } = useFormContext<MeetiInput>()
+  const { register, getValues, setValue, formState: { errors }, clearErrors } = useFormContext<MeetiInput>()
 
   const lat = getValues('location.lat')
   const lng = getValues('location.lng')
@@ -43,7 +43,12 @@ export default function LocationPicker() {
     const url = GEOCODE_URL + `${positionTuple[1]},${positionTuple[0]}`
     const data = await (await fetch(url)).json();
     const location = GeoCodeSchema.parse(data.address)
-    console.log(location);
+    setValue('location.address', location.LongLabel)
+    setValue('location.city', location.City)
+    setValue('location.country', location.CntryName)
+    setValue('location.lat', location.InputY)
+    setValue('location.lng', location.InputX)
+    clearErrors('location.address')
   }
 
 
@@ -88,7 +93,14 @@ export default function LocationPicker() {
         placeholder="Dirección Evento"
         className="disabled:opacity-50 "
         disabled
+        {...register('location.address')}
       />
+
+      {
+        'location' in errors && errors.location?.address && (
+          <FormError>{errors.location.address.message}</FormError>
+        )
+      }
 
     </>
   )
