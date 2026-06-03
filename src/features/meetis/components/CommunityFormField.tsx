@@ -4,8 +4,8 @@ import { useFormContext } from "react-hook-form";
 import { FormError, FormLabel, FormSelect } from "@/src/shared/components/forms"
 import { MeetiInput } from "../schemas/meetiSchema";
 
-
-const communitiesPromise = fetch('/api/user/communities').then(res => res.json());
+const baseUrl = process.env.SITE_URL || 'http://localhost:3000';
+const communitiesPromise = fetch(`${baseUrl}/api/user/communities`).then(res => res.json());
 
 function CommunityOptions() {
   const { register, formState:{ errors } } = useFormContext<MeetiInput>()

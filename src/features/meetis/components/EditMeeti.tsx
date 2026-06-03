@@ -1,0 +1,44 @@
+"use client"
+
+import { FormProvider, Resolver, useForm } from "react-hook-form";
+
+import { Form, FormSubmit } from "@/src/shared/components/forms";
+import MeetiForm from "./MeetiForm";
+import { MeetiInput, MeetiSchema } from "../schemas/meetiSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SelectMeeti } from "../types/meeti.types";
+import { editMeetiAction } from "../actions/meeti.actions";
+
+
+type Props = {
+  meeti: SelectMeeti
+}
+
+export default function EditMeeti({meeti}: Props) {
+  const methods = useForm<MeetiInput>({
+    resolver: zodResolver(MeetiSchema) as Resolver<MeetiInput>,
+    mode: 'all',
+    defaultValues: meeti.virtual ?
+      {
+        ...meeti,
+        virtual: true
+      }:
+      {
+        ...meeti,
+        location: meeti.location!
+      }
+  })
+
+  const onSubmit = async (data: MeetiInput) => {
+    console.log(data);
+    await editMeetiAction(data, meeti.id);
+  }
+  return (
+    <FormProvider {...methods}>
+      <Form onSubmit={methods.handleSubmit(onSubmit)}>
+        <MeetiForm />
+        <FormSubmit value={'Actualizar'} />
+      </Form>
+    </FormProvider>
+  )
+}
