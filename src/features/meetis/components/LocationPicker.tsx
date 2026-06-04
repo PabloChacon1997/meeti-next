@@ -29,8 +29,8 @@ export default function LocationPicker() {
 
   const { register, getValues, setValue, formState: { errors }, clearErrors } = useFormContext<MeetiInput>()
 
-  const lat = getValues('location.lat')
-  const lng = getValues('location.lng')
+  const lat = getValues('location.lat') ?? -2.881278
+  const lng = getValues('location.lng') ?? -78.960774;
 
   const [coordinates, setCoordinates] = useState<LatLngTuple>([lat, lng]);
 

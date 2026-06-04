@@ -1,6 +1,6 @@
 import { db } from "@/src/db"
-import { InsertMeeti, SelectMeeti } from "../types/meeti.types"
-import { meeti, meetiLocations } from "@/src/db/schema"
+import { FullMeeti, InsertMeeti, InsertMeetiLocation, SelectMeeti } from "../types/meeti.types"
+import { category, community, meeti, meetiLocations, users } from "@/src/db/schema"
 import { format } from "date-fns"
 import { and, asc, eq, gte } from "drizzle-orm"
 
@@ -9,18 +9,23 @@ export interface IMeetiRepository {
   insert(data: InsertMeeti): Promise<void>
   findUpcommingByUserId(userId: string): Promise<SelectMeeti[]>
   findById(id: string): Promise<SelectMeeti | null>
-  update(data: InsertMeeti): Promise<void>
+  findFullById(id: string): Promise<FullMeeti | null>
+  update(data: InsertMeeti, meetiId: string): Promise<void>
 }
 
 class MeetiRepository implements IMeetiRepository{ 
   async insert(data: InsertMeeti): Promise<void> {
     const [insertMeeti] = await db.insert(meeti).values(data).returning();
     if (!insertMeeti.virtual && data.location) {
-      await db.insert(meetiLocations).values({
+      await this.insertLocation({
         meetiId: insertMeeti.id,
         ...data.location
       })
     }
+  }
+
+  async insertLocation(data: InsertMeetiLocation) {
+    await db.insert(meetiLocations).values(data);
   }
   
   async findUpcommingByUserId(userId: string): Promise<SelectMeeti[]> {
@@ -55,9 +60,43 @@ class MeetiRepository implements IMeetiRepository{
     return result[0] ?? null;
   }
 
-  async update(data: InsertMeeti): Promise<void> {
-    // TODO: Actualizar datos 
-   console.log(data);
+  async findFullById(id: string): Promise<FullMeeti | null> {
+    const [consult] = await db
+      .select()
+      .from(meeti)
+      .where(eq(meeti.id, id))
+      .leftJoin(meetiLocations, eq(meetiLocations.meetiId, id))
+      .leftJoin(category, eq(category.id, meeti.categoryId))
+      .leftJoin(community, eq(community.id, meeti.communityId))
+      .leftJoin(users, eq(users.id, meeti.createdBy))
+      .limit(1);
+    let result = null;
+    if (consult.meetis) {
+      result = {
+        ...consult.meetis,
+        category: consult.categories!,
+        community: consult.communities!,
+        admin: consult.users!,
+        location: consult.meetis.virtual ? null: consult.meeti_locations
+      }
+    }
+    
+    return result
+  }
+
+  async update(data: InsertMeeti, meetiId: string): Promise<void> {
+    const [updatedMeeti] = await db.update(meeti).set(data).where(eq(meeti.id, meetiId)).returning();
+    if(!updatedMeeti.virtual && data.location) {
+      const locations = await db.select().from(meetiLocations).where(eq(meetiLocations.meetiId, updatedMeeti.id)).limit(1);
+      if (locations[0]) {
+        await db.update(meetiLocations).set(data.location).where(eq(meetiLocations.meetiId, updatedMeeti.id))
+      } else {
+        await this.insertLocation({
+          meetiId: updatedMeeti.id,
+          ...data.location,
+        });
+      }
+    }
   }
 
 }
