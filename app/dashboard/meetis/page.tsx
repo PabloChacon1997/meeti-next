@@ -1,12 +1,12 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { redirect } from "next/navigation";
 
 import Heading from "@/src/shared/components/typography/Heading";
 import { generatePageTitle } from "@/src/shared/utils/metadata";
 import { requireAuth } from "@/src/lib/auth-server";
-import { redirect } from "next/navigation";
 import { meetiService } from "@/src/features/meetis/services/MeetiService";
-import Image from "next/image";
 import { formattMeetiDate } from "@/src/shared/utils/date";
 import { pluralize } from "@/src/shared/utils/strings";
 import MeetiDropdownMenu from "@/src/features/meetis/components/MeetiDropdownMenu";
@@ -48,9 +48,12 @@ export default async function MeetisPage() {
                           priority
                         />
                         <div className="min-w-0 flex-auto">
-                          <a className="hover:underline font-bold text-lg">
+                          <Link 
+                            href={`/meetis/${id}`}
+                            className="hover:underline font-bold text-lg"
+                            target="_blank">
                             {title}
-                          </a>
+                          </Link>
                           <p className="text-gray-600 text-sm">
                             {formattMeetiDate(date, time)}
                           </p>

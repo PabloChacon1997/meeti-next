@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, boolean, time, date, integer, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, boolean, time, date, integer, doublePrecision, timestamp, primaryKey } from "drizzle-orm/pg-core";
 
 import { community } from "./community";
 import { users } from "./auth";
@@ -29,3 +29,11 @@ export const meetiLocations = pgTable('meeti_locations', {
   lat: doublePrecision("latitude").notNull(),   
   lng: doublePrecision("longitude").notNull(),
 });
+
+export const meetiAttendees = pgTable('meeti_attendees', {
+  meetiId: uuid('meeti_id').notNull().references(() => meeti.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
+  createdAt: timestamp('created_at').defaultNow().notNull()
+}, (table) => [
+  primaryKey({ columns: [table.meetiId, table.userId] })
+])

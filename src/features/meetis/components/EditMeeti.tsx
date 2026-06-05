@@ -8,6 +8,8 @@ import { MeetiInput, MeetiSchema } from "../schemas/meetiSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectMeeti } from "../types/meeti.types";
 import { editMeetiAction } from "../actions/meeti.actions";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 
 type Props = {
@@ -30,8 +32,12 @@ export default function EditMeeti({meeti}: Props) {
   })
 
   const onSubmit = async (data: MeetiInput) => {
-    console.log(data);
-    await editMeetiAction(data, meeti.id);
+    const { error, success } = await editMeetiAction(data, meeti.id);
+    if(error) toast.error(error)
+    if(success) {
+      toast.success(success)
+      redirect('/dashboard/meetis')
+    }
   }
   return (
     <FormProvider {...methods}>

@@ -64,6 +64,34 @@
       "when": 1779930780876,
       "tag": "0008_black_mindworm",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1780621232113,
+      "tag": "0009_chubby_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1780622465264,
+      "tag": "0010_curvy_vision",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1780622594778,
+      "tag": "0011_damp_dust",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1780622695075,
+      "tag": "0012_strong_nebula",
+      "breakpoints": true
     }
   ]
 }
