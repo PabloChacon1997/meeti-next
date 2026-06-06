@@ -34,6 +34,8 @@ export const meetiAttendees = pgTable('meeti_attendees', {
   meetiId: uuid('meeti_id').notNull().references(() => meeti.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
   createdAt: timestamp('created_at').defaultNow().notNull()
-}, (table) => [
-  primaryKey({ columns: [table.meetiId, table.userId] })
-])
+}, (table) => ({
+  pk: primaryKey({
+    columns: [table.meetiId, table.userId]
+  })
+}))

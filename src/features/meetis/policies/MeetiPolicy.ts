@@ -18,4 +18,10 @@ export class MeetiPolicy {
   static canDelete(user: User, meeti: SelectMeeti) : boolean {
     return this.isAdmin(user, meeti)
   }
+
+  static isPastMeeti(meeti: SelectMeeti): boolean {
+    const now = new Date();
+    const meetiDateTime = new Date(`${meeti.date}T${meeti.time}`);
+    return meetiDateTime < now;
+  }
 }

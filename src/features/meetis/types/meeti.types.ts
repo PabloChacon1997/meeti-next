@@ -25,3 +25,8 @@ export type FullMeeti = SelectBasicMeeti & {
   community: SelectCommunity
   admin: User
 }
+
+export type MeetiPermissions = {
+  canConfirm: boolean
+  canCancel: boolean
+}

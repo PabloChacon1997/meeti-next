@@ -1,12 +1,15 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Metadata } from "next";
+
 import { DynamicMeetiLocation } from "@/src/features/meetis/components/DynamicMeetiLocation";
 import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
 import { meetiService } from "@/src/features/meetis/services/MeetiService";
+import { requireAuth } from "@/src/lib/auth-server";
 import Heading from "@/src/shared/components/typography/Heading";
 import { displayDate } from "@/src/shared/utils/date";
 import { generatePageTitle } from "@/src/shared/utils/metadata";
-import { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
+import AttendanceToggleButton from "@/src/features/meetis/components/AttendanceToggleButton";
 
 export async function generateMetadata({params}: PageProps<'/meetis/[id]'>): Promise<Metadata> {
   const { id } = await params;
@@ -28,9 +31,10 @@ export async function generateMetadata({params}: PageProps<'/meetis/[id]'>): Pro
 }
 
 export default async function MeetiPage(props: PageProps<'/meetis/[id]'>) {
+  const { session } = await requireAuth()
   const { id } = await props.params;
-  const meeti = await meetiService.getMeetiWithDetails(id);
-
+  const meeti = await meetiService.getMeetiWithDetails(id, session?.user);
+  if (meeti.context.isPastMeeti) throw new Error('Meeti no disponible')
   const { virtual: isVirtual, location } = meeti.data;
   return (
     <>
@@ -50,6 +54,16 @@ export default async function MeetiPage(props: PageProps<'/meetis/[id]'>) {
           </p>
         </div>
       </nav>
+      {
+        meeti.permissions && !meeti.context.isAdmin && (
+          <div className="max-w-7xl mx-auto my-10 flex justify-end">
+            <AttendanceToggleButton
+              meetiId={meeti.data.id}
+              permissions={meeti.permissions}
+            />
+          </div>
+        )
+      }
       <Heading className="text-center mt-10">{meeti.data.title}</Heading>
       <main className="max-w-7xl mx-auto grid grid-cols-1 gap-5 lg:grid-cols-3 p-5 lg:px-0 mt-10">
         <section className="lg:col-span-2">
