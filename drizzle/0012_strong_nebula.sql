@@ -1,1 +1,0 @@
-ALTER TABLE "meeti_attendees" ADD CONSTRAINT "meeti_attendees_meeti_id_user_id_pk" PRIMARY KEY("meeti_id","user_id");
