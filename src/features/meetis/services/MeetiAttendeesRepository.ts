@@ -1,6 +1,8 @@
-import { db } from "@/src/db"
-import { meetiAttendees } from "@/src/db/schema"
 import { and, count, eq } from "drizzle-orm"
+
+import { db } from "@/src/db"
+import { meetiAttendees, users } from "@/src/db/schema"
+import { SelectMeetiAttendeeWithUser } from "../types/meeti.types"
 
 
 export interface IMeetiAttendeesRepository {
@@ -8,6 +10,7 @@ export interface IMeetiAttendeesRepository {
   insert(userId: string, meetiId: string): Promise<void>
   remove(userId: string, meetiId: string): Promise<void>
   findAttendeesCount( meetiId: string): Promise<number>
+  findAttendeesByMeetiId( meetiId: string): Promise<SelectMeetiAttendeeWithUser[]>
 }
 
 class MeetiAttendeesRepository implements IMeetiAttendeesRepository{
@@ -44,6 +47,22 @@ class MeetiAttendeesRepository implements IMeetiAttendeesRepository{
       .from(meetiAttendees)
       .where(eq(meetiAttendees.meetiId, meetiId))
     return result.total;
+  }
+
+  async findAttendeesByMeetiId(meetiId: string): Promise<SelectMeetiAttendeeWithUser[]> {
+    const consult = await db
+      .select()
+      .from(meetiAttendees)
+      .where(eq(meetiAttendees.meetiId, meetiId))
+      .leftJoin(users, eq(users.id, meetiAttendees.userId))
+    const result = consult.map(meetiAttendee => {
+      return {
+        ...meetiAttendee.meeti_attendees!,
+        user: meetiAttendee.users!
+      }
+    })
+
+    return result;
   }
 
 }

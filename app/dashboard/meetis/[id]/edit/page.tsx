@@ -6,12 +6,13 @@ import Heading from "@/src/shared/components/typography/Heading";
 import { Metadata } from "next";
 import Link from "next/link";
 import EditMeeti from "@/src/features/meetis/components/EditMeeti";
+import { generatePageTitle } from "@/src/shared/utils/metadata";
 
 export async function generateMetadata({params}: PageProps<'/dashboard/meetis/[id]/edit'>): Promise<Metadata> {
   const { id } = await params
   const meeti = await meetiService.getMeetiById(id);
   return {
-    title: `Editar Meeti: ${meeti.title}`
+    title: generatePageTitle(`Editar Meeti: ${meeti.title}`)
   }
 }
 

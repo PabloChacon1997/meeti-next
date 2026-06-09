@@ -8,12 +8,14 @@ import { MembershipPolicy } from "../policies/MembershipPolicy";
 import { checkPassword } from "@/src/shared/utils/auth";
 import { deleteUTFiles } from "@/src/lib/uploadthing-server";
 import { IMembershipRepository, membershipRepository } from './MembershipRepository';
+import { IMeetiRepository, meetiRepository } from "../../meetis/services/MeetiRepository";
 
 
 class CommunityService {
   constructor(
     private communityRepository: ICommunityRepository,
     private membershipRepository: IMembershipRepository,
+    private meetiRepository: IMeetiRepository,
   ) {}
 
   async createCommunity(data: CommunityInput, userId: string) {
@@ -122,5 +124,8 @@ class CommunityService {
       success: 'Comunidad Eliminada correctamente'
     }
   }
+  async getUpcomingMeetisByCommunityId(comunityId: string) {
+    return await this.meetiRepository.findUpcomingByCommunity(comunityId);
+  }
 }
-export const communityService = new CommunityService(communityRepository, membershipRepository);
+export const communityService = new CommunityService(communityRepository, membershipRepository, meetiRepository);

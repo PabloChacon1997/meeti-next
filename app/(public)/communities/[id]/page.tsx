@@ -7,6 +7,7 @@ import { getServerSession } from "@/src/lib/auth-server";
 import Heading from "@/src/shared/components/typography/Heading";
 import { generatePageTitle } from "@/src/shared/utils/metadata";
 import { pluralize } from "@/src/shared/utils/strings";
+import UpcomingCommunityMeetis from "@/src/features/communities/components/UpcomingCommunityMeetis";
 
 export async function generateMetadata({params}:  PageProps<'/communities/[id]'>): Promise<Metadata> {
   const { id } = await params;
@@ -54,9 +55,7 @@ export default async function CommunityPage(props: PageProps<'/communities/[id]'
           </div>
         </div>
       </main>
-      <div className="grid grid-cols-1 lg:grid-cols-3 items-start gap-10 max-w-7xl mx-auto mt-10 space-y-5">
-        {/* Próximos Meetis Aquí */}
-      </div>
+      <UpcomingCommunityMeetis communityId={community.data.id}/>
     </>
   )
 }
