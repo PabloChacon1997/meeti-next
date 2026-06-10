@@ -9,6 +9,7 @@ import { checkPassword } from "@/src/shared/utils/auth";
 import { deleteUTFiles } from "@/src/lib/uploadthing-server";
 import { IMembershipRepository, membershipRepository } from './MembershipRepository';
 import { IMeetiRepository, meetiRepository } from "../../meetis/services/MeetiRepository";
+import { IProfileRepository, profileRepository } from "../../profile/services/ProfileRepository";
 
 
 class CommunityService {
@@ -16,6 +17,7 @@ class CommunityService {
     private communityRepository: ICommunityRepository,
     private membershipRepository: IMembershipRepository,
     private meetiRepository: IMeetiRepository,
+    private profileRepository: IProfileRepository,
   ) {}
 
   async createCommunity(data: CommunityInput, userId: string) {
@@ -69,9 +71,13 @@ class CommunityService {
   async getCommunityDetails(communityId: string, user?: User) {
     const community = await this.getCommunity(communityId)
     const memberCount = await this.membershipRepository.getMemberCount(community.id)
+    const admin = await this.profileRepository.findById(community.createdBy);
     if(!user) {
       return {
-        data: community,
+        data: {
+          ...community,
+          admin
+        },
         memberCount,
         context: null,
         permissions: null,
@@ -80,7 +86,10 @@ class CommunityService {
     const isMember = await this.membershipRepository.isMember(community.id, user.id);
     const isAdmin = CommunityPolicy.isAdmin(user, community);
     return {
-      data: community,
+      data: {
+        ...community,
+        admin
+      },
       memberCount,
       context: {
         isMember,
@@ -128,4 +137,4 @@ class CommunityService {
     return await this.meetiRepository.findUpcomingByCommunity(comunityId);
   }
 }
-export const communityService = new CommunityService(communityRepository, membershipRepository, meetiRepository);
+export const communityService = new CommunityService(communityRepository, membershipRepository, meetiRepository, profileRepository);

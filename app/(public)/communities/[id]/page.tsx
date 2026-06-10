@@ -8,6 +8,7 @@ import Heading from "@/src/shared/components/typography/Heading";
 import { generatePageTitle } from "@/src/shared/utils/metadata";
 import { pluralize } from "@/src/shared/utils/strings";
 import UpcomingCommunityMeetis from "@/src/features/communities/components/UpcomingCommunityMeetis";
+import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
 
 export async function generateMetadata({params}:  PageProps<'/communities/[id]'>): Promise<Metadata> {
   const { id } = await params;
@@ -51,7 +52,9 @@ export default async function CommunityPage(props: PageProps<'/communities/[id]'
             <p className="text-gray-600 text-sm text-center">{community.memberCount} {pluralize('Miembro', community.memberCount)}</p>
           </div>
           <div className="bg-slate-100 p-5 rounded-2xl">
-            {/* Admin Aquí */}
+            <OrganizerCard 
+              organizer={community.data.admin}
+            />
           </div>
         </div>
       </main>

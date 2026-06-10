@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { twMerge } from "tailwind-merge"
+import { useFormContext } from "react-hook-form";
+import Image from "next/image";
 
 import { UploadDropZone } from "../../utils/uploadthing"
-import Image from "next/image";
-import { useFormContext } from "react-hook-form";
 import { CommunityInput } from "@/src/features/communities/schemas/communitySchema";
 import { FormError } from "../forms";
 import { MeetiInput } from "@/src/features/meetis/schemas/meetiSchema";
+import { ProfileInput } from "@/src/features/profile/schemas/profileSchema";
 
 export default function UploadImage() {
-  const { formState: { errors }, setValue, getValues } = useFormContext<CommunityInput | MeetiInput>()
+  const { formState: { errors }, setValue, getValues } = useFormContext<CommunityInput | MeetiInput | ProfileInput>()
   const [uploadedImage, setUploadedImage] = useState('');
   const currentImage = getValues('image') ? getValues('image'): null;
   return (
