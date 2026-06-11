@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import Heading from "@/src/shared/components/typography/Heading";
 import { User } from "../../auth/types/auth.types";
@@ -27,9 +28,10 @@ export default function OrganizerCard({ organizer }: Props) {
           <p className="text-lg font-black">{name}</p>
           <p className="text-gray-500 text-sm">{bio}</p>
           {/*TODO*/}
-          <a
+          <Link
+            href={`/profiles/${id}`}
             className="font-bold text-sm bg-pink-600 p-2  text-white block w-full text-center"
-          >Ver Perfil</a>
+          >Ver Perfil</Link>
         </div>
       </div>
     </>

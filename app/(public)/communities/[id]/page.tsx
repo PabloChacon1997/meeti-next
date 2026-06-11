@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Metadata } from "next";
+import { cache } from "react";
 
 import CommunityActionsPanel from "@/src/features/communities/components/CommunityActionsPanel";
 import { communityService } from "@/src/features/communities/services/CommunityService";
@@ -10,19 +11,23 @@ import { pluralize } from "@/src/shared/utils/strings";
 import UpcomingCommunityMeetis from "@/src/features/communities/components/UpcomingCommunityMeetis";
 import OrganizerCard from "@/src/features/meetis/components/OrganizerCard";
 
+const getCommunityCached = cache(async (id: string) => {
+  const session = await getServerSession()
+  const community = await communityService.getCommunityDetails(id, session?.user);
+  return community;
+})
+
 export async function generateMetadata({params}:  PageProps<'/communities/[id]'>): Promise<Metadata> {
   const { id } = await params;
-  const community = await communityService.getCommunity(id);
+  const community = await getCommunityCached(id)
   return {
-    title: generatePageTitle(`Comunidad ${community.name}`)
+    title: generatePageTitle(`Comunidad ${community.data.name}`)
   }
 }
 
 export default async function CommunityPage(props: PageProps<'/communities/[id]'>) {
   const { id } = await props.params;
-  const session = await getServerSession()
-
-  const community = await communityService.getCommunityDetails(id, session?.user)
+  const community = await getCommunityCached(id);
 
   return (
     <>
