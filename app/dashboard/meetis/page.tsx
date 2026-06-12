@@ -10,6 +10,7 @@ import { meetiService } from "@/src/features/meetis/services/MeetiService";
 import { formattMeetiDate } from "@/src/shared/utils/date";
 import { pluralize } from "@/src/shared/utils/strings";
 import MeetiDropdownMenu from "@/src/features/meetis/components/MeetiDropdownMenu";
+import DeleteMeetiDialog from "@/src/features/meetis/components/DeleteMeetiDialog";
 
 
 const title = 'Administra tus meetis';
@@ -81,8 +82,7 @@ export default async function MeetisPage() {
           </p >
         )
       }
-
-
+      <DeleteMeetiDialog />
     </>
   )
 }

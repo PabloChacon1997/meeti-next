@@ -136,5 +136,9 @@ class CommunityService {
   async getUpcomingMeetisByCommunityId(comunityId: string) {
     return await this.meetiRepository.findUpcomingByCommunity(comunityId);
   }
+
+  async getFeaturedCommunities() {
+    return this.communityRepository.findFeatured()
+  }
 }
 export const communityService = new CommunityService(communityRepository, membershipRepository, meetiRepository, profileRepository);

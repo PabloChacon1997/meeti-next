@@ -15,6 +15,7 @@ class CategoryService {
   async getCategoryById(categoryId: string) {
     const category = await this.categoryRepository.findById(categoryId);
     if (!category) notFound();
+    return category;
   }
 }
 

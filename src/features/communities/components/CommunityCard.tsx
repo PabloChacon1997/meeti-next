@@ -3,9 +3,12 @@ import Image from "next/image"
 import { SelectCommunity } from "../types/community.types"
 import Heading from "@/src/shared/components/typography/Heading"
 import Link from "next/link"
+import { pluralize } from "@/src/shared/utils/strings"
 
 type Props = {
-  community: SelectCommunity
+  community: Omit<SelectCommunity, 'createdAt' | 'createdBy'> & {
+    membersCount?: string
+  }
 }
 
 export default function CommunityCard({community}: Props) {
@@ -22,7 +25,8 @@ export default function CommunityCard({community}: Props) {
         />
       </div>
       <div className="p-5 space-y-5">
-        <Heading level={3} className="font-bold text-2xl">{community.name}</Heading>
+        <Heading level={3} className="font-bold text-2xl line-clamp-1">{community.name}</Heading>
+        { community.membersCount && <p className="text-gray-600 text-sm">{community.membersCount} {pluralize('Miembro', +community.membersCount)} </p>}
         <p className="line-clamp-2">{community.description}</p>
         <Link
           href={`/communities/${community.id}`}
