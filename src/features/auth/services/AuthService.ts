@@ -1,9 +1,10 @@
 import { headers } from "next/headers";
 
 import { auth } from "@/src/lib/auth"
-import { ForgotPasswordInput, SetPasswordInput, SignInInput, SignUpInput } from "../schemas/authSchema"
+import { ChangePasswordInput, ForgotPasswordInput, SetPasswordInput, SignInInput, SignUpInput } from "../schemas/authSchema"
 import { authRepository, IAuthRepository } from './AuthRepository';
 import { APIError } from "better-auth";
+import { checkPassword } from "@/src/shared/utils/auth";
 
 
 class AuthService {
@@ -127,6 +128,30 @@ class AuthService {
     return {
       error: '',
       success: ''
+    }
+  }
+
+  async changePassword(input: ChangePasswordInput) {
+    const { new_password, current_password, revoke_other_sessions } = input;
+
+    const isValid = await checkPassword(current_password)
+    if (!isValid) {
+      return {
+        error: 'El password actual es incorrecto',
+        success: ''
+      }
+    }
+
+    await auth.api.changePassword({
+      body: {
+        currentPassword: current_password,
+        newPassword: new_password
+      },
+      headers: await headers()
+    });
+    return {
+      error: '',
+      success: 'El password se actualizo correctamente'
     }
   }
 }
