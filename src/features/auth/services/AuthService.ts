@@ -149,6 +149,12 @@ class AuthService {
       },
       headers: await headers()
     });
+
+    if (revoke_other_sessions) {
+      await auth.api.revokeOtherSessions({
+        headers: await headers()
+      });
+    }
     return {
       error: '',
       success: 'El password se actualizo correctamente'

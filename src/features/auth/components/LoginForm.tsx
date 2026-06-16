@@ -17,7 +17,7 @@ import { redirect } from "next/navigation"
 
 
 export default function LoginForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(SignInShcema),
     mode: 'all',
   })
@@ -51,7 +51,7 @@ export default function LoginForm() {
         {...register('password')}
       />
       {errors.password && <FormError>{errors.password.message}</FormError>}
-      <FormSubmit value="Iniciar Sesión" />
+      <FormSubmit disabled={isSubmitting} value={isSubmitting ? 'Ingresando...': 'Iniciar Sesión'} />
     </Form>
   )
 }

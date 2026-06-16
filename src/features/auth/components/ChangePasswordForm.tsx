@@ -8,6 +8,7 @@ import { FormLabel, FormInput, FormSubmit, Form, FormError } from "@/src/shared/
 import Heading from "@/src/shared/components/typography/Heading"
 import { ChangePasswordInput, ChangePasswordSchema } from "../schemas/authSchema"
 import { changePasswordAction } from "../actions/auth.actions"
+import { redirect } from "next/navigation"
 
 export default function ChangePasswordForm() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -23,6 +24,7 @@ export default function ChangePasswordForm() {
     if(success) {
       toast.success(success)
       reset();
+      redirect('/dashboard/security')
     }
   }
 
