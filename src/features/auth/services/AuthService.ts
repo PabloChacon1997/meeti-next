@@ -154,6 +154,18 @@ class AuthService {
       success: 'El password se actualizo correctamente'
     }
   }
+
+  async getSessions() {
+    return auth.api.listSessions({
+      headers: await headers()
+    })
+  }
+
+  async getSession() {
+    return auth.api.getSession({
+      headers: await headers()
+    })
+  }
 }
 
 export const authService= new AuthService(authRepository)
