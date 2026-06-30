@@ -3,6 +3,9 @@
 import { requireAuth } from "@/src/lib/auth-server"
 import { ChangePasswordInput, ChangePasswordSchema, ForgotPasswordInput, ForgotPasswordSchema, SetPasswordInput, SetPasswordSchema, SignInInput, SignInShcema, SignUpInput, SignUpSchema } from "../schemas/authSchema"
 import { authService } from "../services/AuthService"
+import { getClientIp } from "@/src/shared/utils/ip"
+import { ratelimit } from "@/src/lib/limiter"
+import { getMinutesDiffFromNow } from "@/src/shared/utils/date"
 
 export async function signUpAction(input: SignUpInput) {
   const data = SignUpSchema.safeParse(input)
@@ -18,6 +21,14 @@ export async function signUpAction(input: SignUpInput) {
 }
 
 export async function signInAction(input: SignInInput) {
+  const ip = await getClientIp();
+  const { success, reset } = await ratelimit.limit(ip);
+  if (!success) {
+    return {
+      error: `Limite alcanzado. Intenta de nuevo en ${getMinutesDiffFromNow(reset)} Minutos`,
+      success: ''
+    }
+  }
   const data = SignInShcema.safeParse(input);
   if (!data.success) {
     return {
@@ -31,6 +42,14 @@ export async function signInAction(input: SignInInput) {
 }
 
 export async function forgotPasswordAction(input: ForgotPasswordInput) {
+  const ip = await getClientIp();
+  const { success, reset } = await ratelimit.limit(ip);
+  if (!success) {
+    return {
+      error: `Limite alcanzado. Intenta de nuevo en ${getMinutesDiffFromNow(reset)} Minutos`,
+      success: ''
+    }
+  }
   const data = ForgotPasswordSchema.safeParse(input);
   if (!data.success) {
     return {
