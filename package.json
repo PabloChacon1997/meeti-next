@@ -11,12 +11,15 @@
     "drizzle:seed": "tsx ./src/db/seed"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.119",
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
+    "@openrouter/ai-sdk-provider": "^3.1.0",
     "@uploadthing/react": "^7.3.3",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+    "ai": "^7.0.116",
     "better-auth": "^1.6.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.2.1",
