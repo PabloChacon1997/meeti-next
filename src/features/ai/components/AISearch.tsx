@@ -11,9 +11,14 @@ export default function AISearch() {
     <>
       {
         messages.map(message => (
-          <p key={message.id}>
-            {message.parts.map(part => part.text).join('')}
-          </p>
+          message.parts.map((part, i) => {
+            if (part.type === 'text') {
+              return <p key={i}>{part.text}</p>
+            }
+            if (part.type === 'tool-hola' && part.state === 'output-available') {
+              return <p key={i}>{part.output}</p>
+            }
+          })
         ))
       }
       <Form
