@@ -1,5 +1,5 @@
 import { db } from "@/src/db";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, ilike, or, sql } from "drizzle-orm";
 
 import { CommunityWithMembersCount, InsertCommunity, SelectCommunity } from "../types/community.types";
 import { community, communityMmebers } from "@/src/db/schema";
@@ -12,6 +12,7 @@ export interface ICommunityRepository {
   update(data: CommunityInput, communityId: string): Promise<void>;
   delete(communityId: string): Promise<void>;
   findFeatured(): Promise<CommunityWithMembersCount[]>;
+  search(query: string): Promise<SelectCommunity[]>
 }
 
 class CommunityRepository implements ICommunityRepository {
@@ -66,6 +67,18 @@ class CommunityRepository implements ICommunityRepository {
       .orderBy(desc(membersCount))
       .limit(3)
     return result;
+  }
+
+  async search(query: string): Promise<SelectCommunity[]> {
+    return await db
+      .select()
+      .from(community)
+      .where(
+        or(
+          ilike(community.name, `%${query}%`),
+          ilike(community.description, `%${query}%`),
+        )
+      )
   }
 }
 

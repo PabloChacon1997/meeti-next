@@ -140,5 +140,10 @@ class CommunityService {
   async getFeaturedCommunities() {
     return this.communityRepository.findFeatured()
   }
+
+  async searchCommunityByTopic(query: string) {
+    const communities = await this.communityRepository.search(query);
+    return communities;
+  }
 }
 export const communityService = new CommunityService(communityRepository, membershipRepository, meetiRepository, profileRepository);
