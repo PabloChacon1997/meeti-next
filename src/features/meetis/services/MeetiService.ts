@@ -153,6 +153,14 @@ class MeetiService {
       success: 'Meeti Eliminado correctamente',
     }
   }
+
+  async getMeetisByTopic(query: string) {
+    return await this.meetiRepository.searchByTopic(query);
+  }
+
+  async getVirtualMeetis(query?: string) {
+    return this.meetiRepository.searchVirtual(query);
+  }
 }
 
 export const meetiService = new MeetiService(meetiRepository, communityRepository, meetiAttendeesRepository)

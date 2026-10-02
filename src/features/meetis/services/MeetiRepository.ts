@@ -2,7 +2,7 @@ import { db } from "@/src/db"
 import { FullMeeti, InsertMeeti, InsertMeetiLocation, SelectMeeti } from "../types/meeti.types"
 import { category, community, meeti, meetiLocations, users } from "@/src/db/schema"
 import { format } from "date-fns"
-import { and, asc, eq, gt, gte, or } from "drizzle-orm"
+import { and, asc, eq, gt, gte, ilike, or } from "drizzle-orm"
 
 
 export interface IMeetiRepository {
@@ -15,6 +15,8 @@ export interface IMeetiRepository {
   findUpcomingByCommunity(communityId: string): Promise<SelectMeeti[]>
   findByCategory(categoryId: string): Promise<SelectMeeti[]>
   delete(meetiId: string): Promise<void>
+  searchByTopic(query: string): Promise<SelectMeeti[]>
+  searchVirtual(query?: string): Promise<SelectMeeti[]>
 }
 
 class MeetiRepository implements IMeetiRepository{ 
@@ -163,6 +165,25 @@ class MeetiRepository implements IMeetiRepository{
   async delete(meetiId: string): Promise<void> {
     await db.delete(meeti).where(eq(meeti.id, meetiId));
   }
+
+  async searchByTopic(query: string): Promise<SelectMeeti[]> {
+    const meetis = await db
+      .select()
+      .from(meeti)
+      .where(
+        or(
+          ilike(meeti.title, `%${query}%`),
+          ilike(meeti.details, `%${query}%`),
+        )
+      )
+    return meetis;
+  }
+
+  async searchVirtual(query?: string): Promise<SelectMeeti[]> {
+    // TODO: Añadir query para obetner meetis virtuales
+    return [];
+  }
+  
 
 }
 

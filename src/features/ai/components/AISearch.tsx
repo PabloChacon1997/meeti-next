@@ -5,6 +5,7 @@ import { useChat } from '@ai-sdk/react'
 import { Form, FormLabel, FormSubmit, FormTextArea } from "@/src/shared/components/forms"
 import { Message } from '../types/ai.types';
 import CommunityCard from '../../communities/components/CommunityCard';
+import MeetiCard from '../../meetis/components/MeetiCard';
 
 export default function AISearch() {
   const [input, setInput] = useState('');
@@ -58,10 +59,42 @@ export default function AISearch() {
                     </div>
                   )
                 }
+
+                if (part.type === 'tool-getMeetisBySubject') {
+                  if (part.state !== 'output-available') return null;
+                  const { meetis } = part.output;
+                  if (!meetis.length) return (
+                    <p key={key}>{part.output.message}</p>
+                  )
+                  return (
+                    <div key={key} className='space-y-4'>
+                      <p className='text-gray-700 font-medium'>
+                        Encontré {meetis.length === 1 ? 'Este Meeti ': `${meetis.length} Meetis `} sobre {''}
+                        <span className='text-orange-600 font-bold'>{part.input.query}</span>
+                      </p>
+                      <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 mt-10'>
+                        {
+                          meetis.map(m => (
+                            <MeetiCard key={key} meeti={m}/>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  )
+                }
               })
             }
           </div>
         ))
+      }
+
+      {
+        status === 'submitted' && (
+          <div className='flex items-center justify-center py-5 gap-2 text-gray-500'>
+            <div className='animate-spin size-5 border-2 border-t-transparent border-gray-400 rounded-full' />
+              Pensando...
+          </div>
+        )
       }
       <Form
         onSubmit={e => {
@@ -79,7 +112,7 @@ export default function AISearch() {
 
         <FormSubmit 
           value={'Consultar'}
-          disabled={input.trim() === ''}
+          disabled={input.trim() === '' || status === 'submitted'}
         />
       </Form>
     </>
