@@ -60,7 +60,7 @@ export default function AISearch() {
                   )
                 }
 
-                if (part.type === 'tool-getMeetisBySubject') {
+                if (part.type === 'tool-getMeetisBySubject' || part.type === 'tool-getVirtualMeetis') {
                   if (part.state !== 'output-available') return null;
                   const { meetis } = part.output;
                   if (!meetis.length) return (
@@ -75,7 +75,7 @@ export default function AISearch() {
                       <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 mt-10'>
                         {
                           meetis.map(m => (
-                            <MeetiCard key={key} meeti={m}/>
+                            <MeetiCard key={`${key}-${Math.random()}`} meeti={m}/>
                           ))
                         }
                       </div>

@@ -180,8 +180,82 @@ class MeetiRepository implements IMeetiRepository{
   }
 
   async searchVirtual(query?: string): Promise<SelectMeeti[]> {
-    // TODO: Añadir query para obetner meetis virtuales
-    return [];
+    const normalizeQuery = query?.toLowerCase().trim();
+
+    const isToday = normalizeQuery?.includes('hoy');
+
+    let cleanQuery = normalizeQuery;
+
+    if (isToday) {
+      cleanQuery = cleanQuery?.replace('hoy','').trim();
+    }
+
+    const today = format(new Date(), 'yyyy-MM-dd');
+
+    let meetis = []
+    meetis = await db
+      .select()
+      .from(meeti)
+      .where(
+        and(
+          eq(meeti.virtual, true),
+          // eq(meeti.date, today),
+          // or(
+          //   ilike(meeti.title, `%${cleanQuery}%`),
+          //   ilike(meeti.details, `%${cleanQuery}%`)
+          // )
+        )
+      )
+    if (isToday && !cleanQuery) {
+      
+      meetis = await db
+        .select()
+        .from(meeti)
+        .where(
+          and(
+            eq(meeti.virtual, true),
+            eq(meeti.date, today),
+            // or(
+            //   ilike(meeti.title, `%${cleanQuery}%`),
+            //   ilike(meeti.details, `%${cleanQuery}%`)
+            // )
+          )
+        )
+    }
+    if (!isToday && cleanQuery) {
+      
+      meetis = await db
+        .select()
+        .from(meeti)
+        .where(
+          and(
+            eq(meeti.virtual, true),
+            // eq(meeti.date, today),
+            or(
+              ilike(meeti.title, `%${cleanQuery}%`),
+              ilike(meeti.details, `%${cleanQuery}%`)
+            )
+          )
+        )
+    }
+    if (isToday && cleanQuery) {
+      
+      meetis = await db
+        .select()
+        .from(meeti)
+        .where(
+          and(
+            eq(meeti.virtual, true),
+            eq(meeti.date, today),
+            or(
+              ilike(meeti.title, `%${cleanQuery}%`),
+              ilike(meeti.details, `%${cleanQuery}%`)
+            )
+          )
+        )
+    }
+      
+    return meetis;
   }
   
 
