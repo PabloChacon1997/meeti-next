@@ -161,6 +161,10 @@ class MeetiService {
   async getVirtualMeetis(query?: string) {
     return this.meetiRepository.searchVirtual(query);
   }
+
+  async getInPersonMeetis(query?: string, city?: string, country?: string, today?: boolean) {
+    return this.meetiRepository.searchByLocation(query, city, country, today)
+  }
 }
 
 export const meetiService = new MeetiService(meetiRepository, communityRepository, meetiAttendeesRepository)

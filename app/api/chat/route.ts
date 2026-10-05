@@ -12,7 +12,8 @@ export async function POST(req: NextRequest) {
   const result = streamText({
     messages: await convertToModelMessages(messages),
     system: `Eres un asistente de Meeti AI que ayuda a encontrar comunidades y meetis.`,
-    model: openrouter('qwen/qwen3.8-27b:free'),
+    // model: openrouter('qwen/qwen3.8-27b:free'),
+    model: openrouter('poolside/laguna-s-2.1:free'),
     tools
   });
 

@@ -17,6 +17,7 @@ export interface IMeetiRepository {
   delete(meetiId: string): Promise<void>
   searchByTopic(query: string): Promise<SelectMeeti[]>
   searchVirtual(query?: string): Promise<SelectMeeti[]>
+  searchByLocation(query?: string, city?: string, country?: string, today?: boolean): Promise<SelectMeeti[]>
 }
 
 class MeetiRepository implements IMeetiRepository{ 
@@ -199,11 +200,6 @@ class MeetiRepository implements IMeetiRepository{
       .where(
         and(
           eq(meeti.virtual, true),
-          // eq(meeti.date, today),
-          // or(
-          //   ilike(meeti.title, `%${cleanQuery}%`),
-          //   ilike(meeti.details, `%${cleanQuery}%`)
-          // )
         )
       )
     if (isToday && !cleanQuery) {
@@ -215,10 +211,6 @@ class MeetiRepository implements IMeetiRepository{
           and(
             eq(meeti.virtual, true),
             eq(meeti.date, today),
-            // or(
-            //   ilike(meeti.title, `%${cleanQuery}%`),
-            //   ilike(meeti.details, `%${cleanQuery}%`)
-            // )
           )
         )
     }
@@ -230,7 +222,6 @@ class MeetiRepository implements IMeetiRepository{
         .where(
           and(
             eq(meeti.virtual, true),
-            // eq(meeti.date, today),
             or(
               ilike(meeti.title, `%${cleanQuery}%`),
               ilike(meeti.details, `%${cleanQuery}%`)
@@ -256,6 +247,10 @@ class MeetiRepository implements IMeetiRepository{
     }
       
     return meetis;
+  }
+
+  async searchByLocation(query?: string, city?: string, country?: string, today?: boolean) {
+    return[]
   }
   
 

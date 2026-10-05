@@ -49,21 +49,20 @@ export const meetiTools = {
       }
     }
   }),
-  getInPersonMeetis: tool({
-    description: `
-      Usa esta herramienta cuando el usuario pregunte por eventos presenciales.
-      Reglas:
-        - Si el usuario menciona una ciudad, incluye en 'city'.
-        - Si el usuario menciona una país, incluye en 'country'.
-        - Si el usuario menciona un tema (React, Bitcoin, MKT, IA, Café), inclúyelo dentro de 'query'.
-        - Si el usuario menciona hoy, pon 'today' como true.
-    `,
-    inputSchema: z.object({
-      query: z.string().optional().describe('Tema de interés del Meeti o evento del usuario'),
-      city: z.string().optional().describe('Ciudad del Meeti de interés del usuario'),
-      country: z.string().optional().describe('País del Meeti de interés del usuario'),
-      today: z.boolean().default(false).describe('El usuario desea un meeti o evento de hoy'),
-    }),
-    // execute: async ({ query, city, today, country }) => {}
-  })
+  // getInPersonMeetis: tool({
+  //   description: `
+  //     Usa esta herramienta cuando el usuario pregunte por eventos presenciales.
+  //     Reglas:
+  //       - Si el usuario menciona una ciudad, incluye en 'city'.
+  //       - Si el usuario menciona una país, incluye en 'country'.
+  //       - Si el usuario menciona un tema (React, Bitcoin, MKT, IA, Café), inclúyelo dentro de 'query'.
+  //       - Si el usuario menciona hoy, pon 'today' como true.
+  //   `,
+  //   inputSchema: z.object({
+  //     query: z.string().optional().describe('Tema de interés del Meeti o evento del usuario'),
+  //     city: z.string().optional().describe('Ciudad del Meeti de interés del usuario'),
+  //     country: z.string().optional().describe('País del Meeti de interés del usuario'),
+  //     today: z.boolean().default(false).describe('El usuario desea un meeti o evento de hoy'),
+  //   }),
+  // })
 }
